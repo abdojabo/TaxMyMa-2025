@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ضريبتي المغرب 2025</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+    .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #005EB8; }
+    label { display: block; margin: 15px 0 5px; font-weight: bold; }
+    input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    button { background: #005EB8; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; margin-top: 20px; }
+    .result { margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 6px; font-weight: bold; display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ضريبتي المغرب 2025</h1>
+
+    <div><label>رقم الفاتورة</label><input type="text" id="invoiceNumber"/></div>
+    <div><label>تاريخ الفاتورة</label><input type="date" id="invoiceDate"/></div>
+    <div><label>رقم ICE</label><input type="text" id="ice"/></div>
+    <div><label>المبلغ بدون ضريبة (HT)</label><input type="number" id="ht" step="0.01" oninput="calculate()"/></div>
+    <div><label>معدل TVA</label>
+      <select id="tvaRate" oninput="calculate()">
+        <option value="0.20">20%</option>
+        <option value="0.14">14%</option>
+        <option value="0.10">10%</option>
+        <option value="0.00">0%</option>
+      </select>
+    </div>
+    <div><label>TVA</label><input type="number" id="tva" step="0.01" readonly/></div>
+    <div><label>المبلغ شامل الضريبة (TTC)</label><input type="number" id="ttc" step="0.01" readonly/></div>
+
+    <button onclick="saveInvoice()">حفظ الفاتورة</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      const ht = parseFloat(document.getElementById("ht").value) || 0;
+      const rate = parseFloat(document.getElementById("tvaRate").value);
+      document.getElementById("tva").value = (ht * rate).toFixed(2);
+      document.getElementById("ttc").value = (ht + ht * rate).toFixed(2);
+    }
+
+    function saveInvoice() {
+      const data = {
+        invoiceNumber: document.getElementById("invoiceNumber").value,
+        invoiceDate: document.getElementById("invoiceDate").value,
+        ice: document.getElementById("ice").value,
+        ht: parseFloat(document.getElementById("ht").value),
+        tvaRate: parseFloat(document.getElementById("tvaRate").value),
+        tva: parseFloat(document.getElementById("tva").value),
+        ttc: parseFloat(document.getElementById("ttc").value)
+      };
+
+      fetch('http://localhost:3000/api/invoices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(invoice => {
+        document.getElementById("result").style.display = "block";
+        document.getElementById("result").innerHTML = `✅ تم الحفظ! المبلغ: ${invoice.ttc} درهم`;
+      })
+      .catch(err => {
+        document.getElementById("result").style.display = "block";
+        document.getElementById("result").innerHTML = "❌ خطأ: تأكد من تشغيل الخادم.";
+      });
+    }
+  </script>
+</body>
+</html>
