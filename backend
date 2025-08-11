@@ -1,1 +1,4 @@
-
+cd path/to/TaxMyMa-2025/backend
+npm init -y
+npm install cors
+node server.js
