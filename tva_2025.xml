@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TVA_Declaration xmlns="http://www.tax.gov.ma/xml/tva/2025">
+  <IdentifiantFiscal>123456789</IdentifiantFiscal>
+  <ICE>12345678901234</ICE>
+  <Periode>2025-01</Periode>
+  <TotalHT>50000.00</TotalHT>
+  <TotalTVA>10000.00</TotalTVA>
+  <TotalTTC>60000.00</TotalTTC>
+  <Devise>MAD</Devise>
+</TVA_Declaration>
